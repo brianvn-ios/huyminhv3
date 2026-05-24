@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANEL IOS VIP - Advanced UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- TÔNG MÀU TRẮNG - VÀNG --- */
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-panel: rgba(20, 20, 20, 0.85); 
+            --primary-color: #ffd700; /* Vàng Gold */
+            --secondary-color: #ffffff; /* Trắng */
+            --accent-color: #ffffff; 
+            --glow-color: rgba(255, 215, 0, 0.4); 
+            --border-color: rgba(255, 255, 255, 0.3); 
+            --border-dark: #333333;
+            --text-white: #ffffff;
+            --text-gray: #cccccc;
+            --input-bg: #1a1a1a;
+            --btn-dark: rgba(30, 30, 30, 0.9);
+            --btn-secondary: #252525;
+            --error-bg: rgba(50, 50, 50, 0.9);
+            --online-color: #ffd700; 
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            display: flex; justify-content: center; min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #1f1a00 0%, var(--bg-dark) 60%);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%; max-width: 420px;
+            padding: 20px 15px 90px 15px; 
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+        .mt-10 { margin-top: 10px; } .mt-15 { margin-top: 15px; } .mt-20 { margin-top: 20px; }
+        .text-center { text-align: center; }
+
+        /* --- HEADER & HIỆU ỨNG NEON --- */
+        .header { display: flex; align-items: center; margin-bottom: 20px; }
+        .logo-box {
+            width: 42px; height: 42px; border: 1px solid var(--primary-color); border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            background-color: transparent; overflow: hidden;
+            box-shadow: 0 0 15px rgba(255,215,0,0.5); margin-right: 12px;
+        }
+        .header-info { flex: 1; overflow: hidden; }
+        
+        .neon-text-effect {
+            display: inline-block; font-family: 'Courier New', Courier, monospace; 
+            font-size: 19px; font-weight: 900; color: var(--secondary-color);
+            text-shadow: 0 0 5px var(--secondary-color), 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+            animation: neonPulse 1.5s infinite alternate; letter-spacing: 1px;
+        }
+        
+        @keyframes neonPulse {
+            0% { opacity: 0.8; text-shadow: 0 0 4px var(--primary-color); }
+            100% { opacity: 1; text-shadow: 0 0 15px var(--primary-color), 0 0 25px var(--secondary-color); }
+        }
+
+        .status-badge {
+            background: rgba(255, 215, 0, 0.1); color: var(--online-color);
+            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold;
+            display: flex; align-items: center; gap: 6px; border: 1px solid var(--online-color);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+        @keyframes blink-caret { from, to { opacity: 1 } 50% { opacity: 0 } }
+        .status-badge .dot { width: 6px; height: 6px; background: var(--online-color); border-radius: 50%; animation: blink-caret 1s infinite; }
+
+        /* --- UI COMPONENTS --- */
+        .glass-panel {
+            background-color: var(--bg-panel); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 16px; padding: 22px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.05), inset 0 0 15px rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel-title { font-size: 15px; margin-bottom: 15px; font-weight: 700; text-transform: uppercase; color: var(--primary-color); letter-spacing: 1px; border-bottom: 1px solid var(--secondary-color); padding-bottom: 8px;}
+        
+        .input-group {
+            display: flex; align-items: center; background-color: var(--input-bg);
+            border: 1px solid var(--border-dark); border-radius: 12px;
+            padding: 0 18px; height: 50px; margin-bottom: 15px; transition: 0.3s;
+        }
+        .input-group:focus-within { border-color: var(--primary-color); box-shadow: 0 0 8px var(--glow-color); }
+        .input-group i { color: var(--primary-color); font-size: 15px; }
+        .input-group input { flex: 1; background: transparent; border: none; color: var(--primary-color); font-size: 14px; outline: none; padding: 0 12px; font-weight: bold;}
+
+        .btn {
+            width: 100%; border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 14px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.1s ease;
+            margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-primary { background-color: var(--primary-color); color: var(--bg-dark); box-shadow: 0 0 15px var(--glow-color); border-color: var(--primary-color); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); box-shadow: inset 0 0 8px var(--glow-color), 0 0 8px var(--glow-color); }
+        .btn-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* HIỆU ỨNG ÁNH SÁNG CHẠY QUA CÁC Ô TRỐNG */
+        .feature-item, .stat-box { position: relative; overflow: hidden; }
+        .feature-item::after, .stat-box::after {
+            content: ''; position: absolute;
+            top: -50%; left: -100%; width: 50%; height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transform: skewX(-20deg); animation: gloss 3.5s infinite linear; pointer-events: none;
+        }
+        @keyframes gloss { 0% { left: -100%; } 50% { left: 200%; } 100% { left: 200%; } }
+
+        .feature-item {
+            background-color: var(--btn-secondary); border: 1px solid var(--border-dark); border-radius: 12px; padding: 14px 16px;
+            display: flex; align-items: center; margin-bottom: 10px; transition: all 0.2s; cursor: pointer; z-index: 2;
+        }
+        .feature-item:hover { border-color: var(--border-color); box-shadow: 0 0 10px var(--glow-color); }
+        .feature-info { flex: 1; display: flex; align-items: center; gap: 8px;}
+        .feature-title { font-size: 13px; font-weight: bold; color: var(--secondary-color); }
+        
+        .vip-badge { background: linear-gradient(45deg, #ffffff, #ffd700); color: #000; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; box-shadow: 0 0 5px rgba(255,215,0,0.5); }
+
+        /* --- NÚT SWITCH THƯỜNG --- */
+        .custom-switch {
+            position: relative; width: 60px; height: 26px; background-color: var(--btn-dark); border: 1px solid var(--border-dark);
+            border-radius: 15px; display: flex; align-items: center; justify-content: center;
+            font-size: 10px; color: var(--text-gray); font-weight: bold; transition: 0.3s;
+        }
+        .custom-switch.active { background-color: var(--primary-color); color: var(--bg-dark); box-shadow: 0 0 10px var(--glow-color); border-color: var(--primary-color); }
+        .custom-switch::before { content: 'OFF'; }
+        .custom-switch.active::before { content: 'ON'; }
+
+        /* --- NÚT SWITCH VIP HÀNH TINH --- */
+        .vip-switch { background-color: var(--btn-dark) !important; overflow: hidden; justify-content: flex-start !important; }
+        .vip-switch::before { content: '' !important; } 
+        
+        .planet-knob {
+            position: absolute; left: 3px;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #555, #222);
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            display: flex; justify-content: center; align-items: center;
+            animation: swingPlanet 1.5s infinite ease-in-out alternate;
+        }
+        .planet-knob::after {
+            content: ''; position: absolute; width: 28px; height: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.6); border-radius: 50%; transform: rotate(20deg);
+        }
+        .vip-switch.active .planet-knob {
+            left: 35px; background: radial-gradient(circle at 30% 30%, #ffffff, #ffd700);
+            box-shadow: 0 0 15px #ffd700;
+        }
+        @keyframes swingPlanet { 0% { transform: rotate(-25deg) scale(0.95); } 100% { transform: rotate(25deg) scale(1.05); } }
+
+        /* --- STATS GRID --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: var(--input-bg); border: 1px solid var(--border-dark); border-radius: 8px; padding: 15px 5px; text-align: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .stat-box span { display: block; font-size: 11px; color: var(--text-gray); margin-bottom: 8px; font-weight: bold;}
+        .stat-box strong { font-size: 18px; color: var(--primary-color); text-shadow: 0 0 8px var(--glow-color); }
+
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 420px; background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px); border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; padding: 12px 0 20px 0; z-index: 100;
+            box-shadow: 0 -5px 20px rgba(255,215,0,0.1);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 10px; cursor: pointer; transition: 0.3s; width: 20%;}
+        .nav-item i { font-size: 18px; margin-bottom: 4px; transition: 0.3s; }
+        .nav-item.active i, .nav-item:hover i { color: var(--primary-color); transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary-color)); }
+        .nav-item.active span, .nav-item:hover span { color: var(--secondary-color); font-weight: bold; }
+
+        /* --- SENSI BARS --- */
+        #result-display { background: var(--input-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-dark); }
+        .sensi-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .sensi-row:last-child { margin-bottom: 0; }
+        .sensi-label { font-size: 12px; color: var(--secondary-color); width: 45%; text-align: left; }
+        .sensi-bar-bg { width: 40%; height: 8px; background: var(--border-dark); border-radius: 4px; overflow: hidden; position: relative; }
+        .sensi-bar-fill { height: 100%; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); width: 0%; transition: width 1.5s cubic-bezier(0.1, 0.7, 0.1, 1); box-shadow: 0 0 8px var(--primary-color); }
+        .sensi-val { font-size: 13px; color: var(--primary-color); width: 15%; text-align: right; font-weight: bold; }
+
+        /* --- INFO TAB STYLES --- */
+        .info-card { background: var(--input-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dark); margin-bottom: 15px; display: flex; align-items: center; gap: 15px;}
+        .info-card img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary-color); object-fit: cover; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .social-link { display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: var(--btn-secondary); border-radius: 10px; text-decoration: none; color: var(--secondary-color); margin-bottom: 10px; border: 1px solid transparent; transition: 0.2s;}
+        .social-link:hover { border-color: var(--primary-color); box-shadow: 0 0 10px var(--glow-color); color: var(--primary-color);}
+
+        /* --- EFFECT SCREENS --- */
+        #radar-loading, #binary-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.98); z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .radar-box { position: relative; width: 180px; height: 180px; border-radius: 50%; border: 2px solid var(--primary-color); background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%); box-shadow: inset 0 0 30px rgba(255,215,0,0.2), 0 0 20px rgba(255,215,0,0.2); display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .radar-box::before { content: ''; position: absolute; top: 25%; left: 25%; width: 50%; height: 50%; border-radius: 50%; border: 1px dashed rgba(255, 215, 0, 0.4); }
+        .radar-box::after { content: ''; position: absolute; height: 100%; width: 1px; background: rgba(255, 215, 0, 0.5); }
+        .radar-cross { position: absolute; width: 100%; height: 1px; top: 50%; left: 0; background: rgba(255, 215, 0, 0.5); z-index: 1; }
+        .radar-blip { position: absolute; top: 35%; left: 65%; width: 8px; height: 8px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #fff, 0 0 20px var(--primary-color); animation: blip 1.5s infinite linear; z-index: 3; opacity: 0; }
+        
+        @keyframes blip { 0%, 80% { opacity: 0; } 85% { opacity: 1; } 100% { opacity: 0; } }
+        
+        .loading-number { font-size: 40px; font-weight: bold; color: var(--secondary-color); margin-top: 30px; text-shadow: 0 0 15px var(--glow-color); }
+        
+        #binary-text { color: var(--primary-color); font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.2; word-break: break-all; width: 90%; text-shadow: 0 0 5px var(--primary-color); overflow: hidden; height: 80%; opacity: 0.8;}
+
+        #notify-alert { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--secondary-color); color: var(--bg-dark); padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 14px; box-shadow: 0 5px 15px rgba(255,255,255,0.4); z-index: 6000; transition: 0.4s; text-transform: uppercase; border-left: 4px solid var(--primary-color); }
+        #notify-alert.active { transform: translateX(-50%) translateY(0); }
+        
+        .click-flash { background-color: var(--secondary-color) !important; color: var(--bg-dark) !important; box-shadow: 0 0 20px var(--secondary-color) !important; }
+
+        /* --- HIỆU ỨNG TIA CHẠY NGANG (VR SCAN) --- */
+        .vr-scanner-panel { position: relative; overflow: hidden; }
+        .vr-scan-ray {
+            position: absolute; top: 0; left: -15%; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--secondary-color), var(--primary-color), transparent);
+            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4), 0 0 30px 10px rgba(255, 215, 0, 0.3);
+            z-index: 1; pointer-events: none; animation: scanRayMotion 3s ease-in-out infinite alternate;
+        }
+        @keyframes scanRayMotion { 0% { left: -10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: 110%; opacity: 0; } }
+
+        /* HIỆU ỨNG RƠI VƯƠNG MIỆN VIP */
+        @keyframes fallCrown {
+            0% { top: -50px; opacity: 1; transform: translateX(-50%) scale(1) rotate(0deg); }
+            80% { opacity: 1; }
+            100% { top: 100vh; opacity: 0; transform: translateX(-50%) scale(1.5) rotate(20deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notify-alert"><i class="fa-solid fa-check"></i> System Alert</div>
+
+    <div id="radar-loading" class="hidden">
+        <div class="radar-box"><div class="radar-cross"></div><div class="radar-blip"></div></div>
+        <div class="loading-number" id="load-percent">0%</div>
+        <div style="color:var(--primary-color); margin-top:10px; letter-spacing:1px; font-weight:bold;"><i class="fa-solid fa-bolt"></i> ĐANG TRÍCH XUẤT...</div>
+    </div>
+
+    <div id="binary-loading" class="hidden">
+        <h2 style="color: var(--primary-color); text-shadow: 0 0 10px var(--primary-color); margin-bottom: 20px;">INJECTING PROTOCOL...</h2>
+        <div id="binary-text"></div>
+    </div>
+
+    <div class="app-container">
+        
+        <header class="header">
+            <div class="logo-box interactable">
+                <img src="https://i.postimg.cc/8kHWDbcK/IMG-7802.jpg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="header-info">
+                <div style="display: flex; align-items: center;">
+                    <div class="neon-text-effect">PANEL IOS VIP</div>
+                </div>
+                <p style="font-size: 11px; color: var(--text-gray);">Dev: Huy Minh</p>
+            </div>
+            <div class="header-actions">
+                <span class="status-badge"><span class="dot"></span> Online</span>
+            </div>
+        </header>
+
+        <div id="login-screen" class="glass-panel">
+            <h2 class="text-center" style="color: var(--secondary-color); margin-bottom: 10px; text-shadow: 0 0 10px var(--secondary-color);">SYSTEM LOGIN</h2>
+            <p class="text-center" style="color: var(--text-gray); font-size: 12px; margin-bottom: 20px;">Nhập mã truy cập giao thức hệ thống.</p>
+            <div class="input-group">
+                <i class="fa-solid fa-terminal" style="color: var(--secondary-color);"></i>
+                <input type="text" id="key-input" placeholder="Enter Key..." maxlength="11" style="color: var(--secondary-color);">
+            </div>
+            <button class="btn btn-outline interactable" onclick="checkKey()" style="border-color: var(--secondary-color); color: var(--secondary-color); box-shadow: inset 0 0 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,255,255,0.3);">Execute <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+
+        <div id="main-content" class="hidden">
+
+            <div id="tab-home" class="tab-pane">
+                <div class="glass-panel text-center" style="padding: 30px 20px;">
+                    <i class="fa-solid fa-crown" style="font-size: 40px; color: var(--primary-color); margin-bottom: 15px; filter: drop-shadow(0 0 10px var(--primary-color));"></i>
+                    <h2 style="color: var(--text-white); font-size: 22px; margin-bottom: 5px;">Welcome to <span style="color: var(--primary-color);">HELIX</span></h2>
+                    <p style="color: var(--text-gray); font-size: 12px; line-height: 1.5;">Hệ thống tối ưu hóa và hỗ trợ can thiệp dữ liệu trò chơi tiên tiến nhất.</p>
+                    
+                    <div style="margin-top: 25px; border-radius: 12px; border: 1px solid var(--border-dark); box-shadow: 0 0 15px rgba(255,255,255,0.05); padding: 6px; background: var(--input-bg);">
+                        <img src="https://i.postimg.cc/j5vjgB9z/IMG-3343.jpg" alt="Đồ thị dọn rác" style="width: 100%; border-radius: 8px; display: block; object-fit: cover;">
+                    </div>
+                </div>
+
+                <div class="glass-panel mt-15">
+                    <h3 class="panel-title text-center"><i class="fa-solid fa-server"></i> Tối Ưu Hệ Thống</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box"><span>PING</span><strong id="val-ping">24ms</strong></div>
+                        <div class="stat-box"><span>FPS</span><strong id="val-fps">60</strong></div>
+                        <div class="stat-box"><span>RAM</span><strong id="val-ram">45%</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-functions" class="tab-pane hidden">
+                <div class="glass-panel vr-scanner-panel">
+                    <div class="vr-scan-ray"></div>
+                    <h3 class="panel-title" style="position: relative; z-index: 2;"><i class="fa-solid fa-crosshairs"></i> Module Tính Năng</h3>
+                    
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Aimbot Pro <span class="vip-badge">NEW</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Antiban Bypass <span class="vip-badge">VIP</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Aimlock</div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Aimlock Head <span class="vip-badge">VIP</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Aimlock Mod <span class="vip-badge">VIP</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Sensitivity Boost</div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+
+                    <button class="btn btn-primary interactable mt-15" onclick="runBinaryEffect()" style="position: relative; z-index: 2; box-shadow: 0 0 20px var(--glow-color); color: #000; border-bottom: 3px solid var(--secondary-color);">
+                        <i class="fa-solid fa-power-off"></i> KHỞI CHẠY HỆ THỐNG
+                    </button>
+                </div>
+            </div>
+
+            <div id="tab-optimize" class="tab-pane hidden">
+                <div class="glass-panel">
+                    <h3 class="panel-title"><i class="fa-solid fa-rocket"></i> Giao Thức Tối Ưu</h3>
+                    
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">Xóa Tố Cáo <span class="vip-badge">VIP</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">TỐI ƯU RAM</div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">GAME MODE <span class="vip-badge">VIP ON</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+                    <div class="feature-item interactable" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">FIX VIP <span class="vip-badge">VIP</span></div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+
+                    <div class="mt-15" style="border-top: 1px dashed var(--border-dark); padding-top: 15px;">
+                        <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: var(--secondary-color);">Lựa chọn Fix <span class="vip-badge">VIP</span></div>
+                        <div class="btn-grid-2">
+                            <button class="btn btn-outline interactable">FIX RUNG</button>
+                            <button class="btn btn-outline interactable">FIX LAG</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-item interactable mt-15" onclick="toggleCustomSwitch(this)">
+                        <div class="feature-info"><div class="feature-title">BUFF FPS</div></div>
+                        <div class="custom-switch vip-switch"><div class="planet-knob"></div></div>
+                    </div>
+
+                    <div class="mt-15">
+                        <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: var(--secondary-color);">Mức FPS</div>
+                        <div class="btn-grid-2">
+                            <button id="btn-fps-90" class="btn btn-primary interactable" style="color: #000;" onclick="setFPS(90)">90 FPS</button>
+                            <button id="btn-fps-120" class="btn btn-outline interactable" style="font-size: 11px; color: var(--primary-color);" onclick="setFPS(120)">VIP 120 FPS</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-sensi" class="tab-pane hidden">
+                <div class="glass-panel">
+                    <h3 class="panel-title"><i class="fa-solid fa-sliders"></i> Config Sensi</h3>
+                    <p style="font-size: 12px; color: var(--text-gray); margin-bottom: 15px;">Nhập ID hoặc Tên In-game để trích xuất biểu đồ độ nhạy chuẩn xác nhất.</p>
+                    
+                    <div class="input-group">
+                        <i class="fa-solid fa-user-ninja"></i>
+                        <input type="text" id="calc-name" placeholder="Nhập ID hoặc Tên...">
+                    </div>
+                    <div id="result-box" class="hidden" style="margin-bottom: 15px;">
+                        <div id="result-display"></div>
+                    </div>
+                    <button class="btn btn-primary interactable" onclick="generateSensi()" style="color: #000;">Lấy Độ Nhạy & Mã Nguồn</button>
+                </div>
+            </div>
+
+            <div id="tab-info" class="tab-pane hidden">
+                <div class="glass-panel">
+                    <h3 class="panel-title"><i class="fa-solid fa-address-card"></i> Developer Info</h3>
+                    
+                    <div class="info-card">
+                        <img src="https://i.postimg.cc/x8dYVQpJ/328B379D-A3C1-41BB-BEFE-34405949E34A.png" alt="Huy Minh">
+                        <div>
+                            <h4 style="color: var(--primary-color); font-size: 18px; text-transform: uppercase; text-shadow: 0 0 8px rgba(255,215,0,0.4);">𝙃𝙪𝙮 𝙈𝙞𝙣𝙝🪽</h4>
+                            <p style="color: var(--secondary-color); font-size: 12px; margin-top: 2px; font-weight: bold;">Dev: Tạ Huy Minh</p>
+                        </div>
+                    </div>
+
+                    <a href="https://www.facebook.com/share/1CaC9gYRmG/?mibextid=wwXIfr" target="_blank" class="social-link interactable">
+                        <i class="fa-brands fa-facebook" style="font-size: 20px; color: #1877f2; width: 25px; text-align: center;"></i>
+                        <span style="font-weight: bold; font-size: 13px;">Facebook Huy Minh</span>
+                    </a>
+                    
+                    <a href="zalo.me/84378881167" target="_blank" class="social-link interactable">
+                        <i class="fa-solid fa-comment-dots" style="font-size: 20px; color: #0068ff; width: 25px; text-align: center;"></i>
+                        <span style="font-weight: bold; font-size: 13px;">Zalo: 0378881167</span>
+                    </a>
+
+                    <a href="https://t.me/huyminhvn" target="_blank" class="social-link interactable">
+                        <i class="fa-brands fa-telegram" style="font-size: 20px; color: #0088cc; width: 25px; text-align: center;"></i>
+                        <span style="font-weight: bold; font-size: 13px;">Telegram: @huyminhvn</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        
+        <div id="bottom-bar" class="bottom-nav hidden">
+            <div class="nav-item active" onclick="switchTab('tab-home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" onclick="switchTab('tab-functions', this)"><i class="fa-solid fa-gear"></i><span>Chức năng</span></div>
+            <div class="nav-item" onclick="switchTab('tab-optimize', this)"><i class="fa-solid fa-rocket"></i><span>Tối ưu</span></div>
+            <div class="nav-item" onclick="switchTab('tab-sensi', this)"><i class="fa-solid fa-crosshairs"></i><span>Sensi</span></div>
+            <div class="nav-item" onclick="switchTab('tab-info', this)"><i class="fa-solid fa-circle-info"></i><span>Info</span></div>
+        </div>
+
+    </div>
+
+    <script>
+        const KEY_SUCCESS = "helix"; 
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.03, audioCtx.currentTime);
+            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.05); 
+        }
+
+        document.querySelectorAll('.interactable').forEach(el => {
+            el.addEventListener('click', function() {
+                playBeep(); 
+                this.classList.add('click-flash');
+                setTimeout(() => this.classList.remove('click-flash'), 150);
+            });
+        });
+        function switchTab(tabId, navElement) {
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            navElement.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        function toggleCustomSwitch(element) {
+            const switchBtn = element.querySelector('.custom-switch');
+            if(switchBtn) switchBtn.classList.toggle('active');
+        }
+
+        function showAlert(msg) {
+            const notify = document.getElementById('notify-alert');
+            notify.innerHTML = `<i class="fa-solid fa-check"></i> ${msg}`;
+            notify.classList.add('active');
+            setTimeout(() => notify.classList.remove('active'), 2500);
+        }
+
+        function checkKey() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('bottom-bar').classList.remove('hidden');
+            showAlert("Login Successful");
+        }
+
+        setInterval(() => {
+            document.getElementById('val-ping').innerText = Math.floor(Math.random() * (45 - 20) + 20) + 'ms';
+            document.getElementById('val-fps').innerText = Math.floor(Math.random() * (62 - 55) + 55);
+            document.getElementById('val-ram').innerText = Math.floor(Math.random() * (85 - 50) + 50) + '%';
+        }, 2000);
+        function runBinaryEffect() {
+            const screen = document.getElementById('binary-loading');
+            const textEl = document.getElementById('binary-text');
+            screen.classList.remove('hidden');
+            
+            const binInterval = setInterval(() => {
+                let binStr = "";
+                for(let i=0; i<800; i++) binStr += Math.round(Math.random()) + (Math.random() > 0.8 ? " " : "");
+                textEl.innerText = binStr;
+            }, 60);
+            setTimeout(() => {
+                clearInterval(binInterval);
+                screen.classList.add('hidden');
+                showAlert("Inject Modules Success!");
+            }, 3000);
+        }
+
+        // --- CÁC HÀM XỬ LÝ CHUYỂN ĐỔI FPS VÀ RƠI VƯƠNG MIỆN ---
+        function dropCrown() {
+            const crown = document.createElement('div');
+            crown.innerHTML = '👑';
+            crown.style.position = 'fixed';
+            crown.style.top = '-50px';
+            crown.style.left = '50%';
+            crown.style.transform = 'translateX(-50%)';
+            crown.style.fontSize = '40px';
+            crown.style.zIndex = '9999';
+            crown.style.pointerEvents = 'none';
+            crown.style.filter = 'drop-shadow(0 0 15px #ffd700)';
+            crown.style.animation = 'fallCrown 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+            document.body.appendChild(crown);
+
+            setTimeout(() => {
+                crown.remove();
+            }, 2000);
+        }
+
+        function setFPS(level) {
+            const btn90 = document.getElementById('btn-fps-90');
+            const btn120 = document.getElementById('btn-fps-120');
+
+            if (level === 90) {
+                btn90.className = "btn btn-primary interactable";
+                btn90.style.color = "#000";
+                btn120.className = "btn btn-outline interactable";
+                btn120.style.color = "var(--primary-color)"; 
+            } else if (level === 120) {
+                btn120.className = "btn btn-primary interactable";
+                btn120.style.color = "#000";
+                btn90.className = "btn btn-outline interactable";
+                btn90.style.color = "var(--primary-color)"; 
+                dropCrown(); 
+            }
+        }
+
+        let isGenerating = false;
+        function generateSensi() {
+            const nameInput = document.getElementById('calc-name').value.trim();
+            if (!nameInput) { showAlert('Vui lòng nhập Tên/ID!'); return; }
+            if (isGenerating) return;
+            isGenerating = true;
+            document.getElementById('result-box').classList.add('hidden'); 
+            const radarScreen = document.getElementById('radar-loading');
+            const percentText = document.getElementById('load-percent');
+            radarScreen.classList.remove('hidden');
+            
+            let percent = 0;
+            const loadingInterval = setInterval(() => {
+                percent += Math.floor(Math.random() * 8) + 3; 
+                if (percent >= 100) {
+                    percent = 100; percentText.innerText = percent + "%";
+                    clearInterval(loadingInterval);
+                    setTimeout(() => {
+                        radarScreen.classList.add('hidden');
+                        showResult(nameInput);
+                        isGenerating = false;
+                        percentText.innerText = "0%";
+                        showAlert("Trích xuất thành công!");
+                    }, 500);
+                } else {
+                    percentText.innerText = percent + "%";
+                }
+            }, 100);
+        }
+
+        // --- HÀM TẠO THANH SENSI VỚI TỶ LỆ CHUẨN ĐẾN 200 ---
+        function createSensiBar(label, value) {
+            let percentWidth = value / 2; // Chia 2 vì mức max là 200 thay vì 100
+            return `
+                <div class="sensi-row">
+                    <div class="sensi-label">${label}</div>
+                    <div class="sensi-bar-bg"><div class="sensi-bar-fill" data-width="${percentWidth}"></div></div>
+                    <div class="sensi-val">${value}</div>
+                </div>`;
+        }
+
+        // --- HÀM RANDOM SENSI TỚI 200 ---
+        function showResult(name) {
+            const dpiOptions = [480, 520, 580, 600, 640];
+            const dpi = dpiOptions[name.length % dpiOptions.length];
+            
+            const valNhìn = Math.floor(Math.random() * 201);
+            const valRedDot = Math.floor(Math.random() * 201);
+            const val2x = Math.floor(Math.random() * 201);
+            const val4x = Math.floor(Math.random() * 201);
+            const valAWM = Math.floor(Math.random() * 201);
+
+            document.getElementById('result-display').innerHTML = `
+                <div style="text-align:center; margin-bottom: 15px; border-bottom: 1px dashed var(--border-dark); padding-bottom: 12px;">
+                    <p style="color:var(--text-gray); font-size:12px; margin-bottom: 6px;">
+                        <i class="fa-solid fa-crosshairs" style="color: var(--primary-color);"></i> Mục tiêu: <span style="color:white; font-weight:bold;">${name}</span>
+                    </p>
+                    <p style="font-size:16px; font-weight:bold; color:var(--primary-color); margin-top:5px; text-shadow: 0 0 5px var(--glow-color);">DPI BẮT BUỘC: ${dpi}</p>
+                </div>
+                ${createSensiBar('Nhìn xung quanh', valNhìn)}
+                ${createSensiBar('Red Dot Sight', valRedDot)}
+                ${createSensiBar('Ống ngắm 2x', val2x)}
+                ${createSensiBar('Ống ngắm 4x', val4x)}
+                ${createSensiBar('Ống ngắm AWM', valAWM)}
+            `;
+            
+            document.getElementById('result-box').classList.remove('hidden');
+
+            setTimeout(() => {
+                document.querySelectorAll('.sensi-bar-fill').forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-width') + '%';
+                });
+            }, 50);
+        }
+    </script>
+</body>
+</html>
